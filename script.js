@@ -31,38 +31,29 @@ function togglePage(){
 // Get Quote from API
 async function getQuote(){
     loading();
-
-
     var apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
     var proxyUrl = 'https://corsreverseproxyserver.herokuapp.com/'; // to fix cors error
 
+    if(english) {
+        apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
+        pageBtn.innerText = '中文';
+        newQuoteBtn.innerText = 'New Quote'
+    }
+    else {
+        apiUrl = 'https://data.zhai78.com/openOneGood.php';
+        pageBtn.innerText = 'English';
+        newQuoteBtn.innerText = '新启示'
+    }
+
     try {
-        if(english) {
-            apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
-            proxyUrl = 'https://corsreverseproxyserver.herokuapp.com/';
-            pageBtn.innerText = '中文';
-            newQuoteBtn.innerText = 'New Quote'
-        }
-        else {
-            apiUrl = 'https://data.zhai78.com/openOneGood.php';
-            pageBtn.innerText = 'English';
-            newQuoteBtn.innerText = '新启示',
-            proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        }
         const response = await fetch(proxyUrl + apiUrl);
         const data = await response.json();
-        console.log(data.quoteAuthor)
+
+        await console.log(data)
         if(data.quoteAuthor === '' || data.quoteAuthor === undefined) {
             authorText.innerText = ''
         }else {
             authorText.innerText = data.quoteAuthor
-        }
-
-        // Reduce font size if there is long quotes
-        if(data.quoteText.length > 80 || data.txt.length > 80) {
-            quoteText.classList.add('long-quote');
-        }else {
-            quoteText.classList.remove('long-quote');
         }
 
         if(english){
@@ -74,9 +65,12 @@ async function getQuote(){
         // Stop loader, show container
         complete()
 
+
     }catch(error) {
         getQuote();
     }
+
+
 }
 
 // Tweet Quote
