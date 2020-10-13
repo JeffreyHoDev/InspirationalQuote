@@ -8,14 +8,14 @@ const pageBtn = document.getElementById('page-select');
 
 var english = true;
 
-// Show Loading
-function loading(){
+// Loading Spinner
+function showLoadingSpinner(){
     loader.hidden = false;
     quoteContainer.hidden = true;
 }
 
 // Hide Loading
-function complete(){
+function removeLoadingSpinner(){
     if(!loader.hidden) {
         quoteContainer.hidden = false;
         loader.hidden = true;
@@ -30,16 +30,23 @@ function togglePage(){
 
 // Get Quote from API
 async function getQuote(){
-    loading();
-    var apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
-    var proxyUrl = 'https://corsreverseproxyserver.herokuapp.com/'; // to fix cors error
 
+    showLoadingSpinner();
+
+    // default url
+    var apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json'; 
+    
+    // to fix cors error
+    var proxyUrl = 'https://corsreverseproxyserver.herokuapp.com/'; 
+
+    // Check if language selected is English or Mandarin
     if(english) {
         apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
         pageBtn.innerText = '中文';
         newQuoteBtn.innerText = 'New Quote'
     }
     else {
+        // Chinese quote url
         apiUrl = 'https://data.zhai78.com/openOneGood.php';
         pageBtn.innerText = 'English';
         newQuoteBtn.innerText = '新启示'
@@ -49,7 +56,6 @@ async function getQuote(){
         const response = await fetch(proxyUrl + apiUrl);
         const data = await response.json();
 
-        await console.log(data)
         if(data.quoteAuthor === '' || data.quoteAuthor === undefined) {
             authorText.innerText = ''
         }else {
@@ -62,11 +68,11 @@ async function getQuote(){
             quoteText.innerText = data["txt"];
         }
 
-        // Stop loader, show container
-        complete()
+        removeLoadingSpinner()
 
 
     }catch(error) {
+        console.log(error);
         getQuote();
     }
 
