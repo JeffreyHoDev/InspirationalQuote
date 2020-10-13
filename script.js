@@ -34,18 +34,20 @@ async function getQuote(){
 
 
     var apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
-    const proxyUrl = 'https://corsreverseproxyserver.herokuapp.com/'; // to fix cors error
+    var proxyUrl = 'https://corsreverseproxyserver.herokuapp.com/'; // to fix cors error
 
     try {
         if(english) {
-            apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json'
+            apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
+            proxyUrl = 'https://corsreverseproxyserver.herokuapp.com/';
             pageBtn.innerText = '中文';
             newQuoteBtn.innerText = 'New Quote'
         }
         else {
             apiUrl = 'https://data.zhai78.com/openOneGood.php';
             pageBtn.innerText = 'English';
-            newQuoteBtn.innerText = '新启示'
+            newQuoteBtn.innerText = '新启示',
+            proxyUrl = 'https://cors-anywhere.herokuapp.com/';
         }
         const response = await fetch(proxyUrl + apiUrl);
         const data = await response.json();
